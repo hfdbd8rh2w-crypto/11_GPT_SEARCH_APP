@@ -37,5 +37,5 @@ module.exports = async (req, res) => {
     console.error("OpenAI error:", err);
     res.status(500).json({ error: "Something went wrong talking to GPT." });
   }
-};
+}
 
