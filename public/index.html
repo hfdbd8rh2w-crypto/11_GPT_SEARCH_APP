@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GPT Search</title>
+    <style>
+      body { font-family: sans-serif; margin: 2rem auto; max-width: 640px; }
+      form { display: flex; gap: 0.5rem; }
+      input[type="text"] { flex: 1; padding: 0.5rem; }
+      button { padding: 0.5rem 1rem; }
+      pre { background: #f4f4f4; padding: 1rem; margin-top: 1rem; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>GPT Search</h1>
+    <form id="search-form">
+      <input id="query" type="text" placeholder="Ask something…" required />
+      <button type="submit">Search</button>
+    </form>
+    <pre id="answer">Ask a question to get started.</pre>
+
+    <script>
+      const form = document.getElementById("search-form");
+      const queryInput = document.getElementById("query");
+      const answerEl = document.getElementById("answer");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const query = queryInput.value.trim();
+        if (!query) return;
+
+        answerEl.textContent = "Thinking…";
+
+        try {
+          const res = await fetch("/api/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+
+          const data = await res.json();
+          answerEl.textContent = data.answer || data.error || "Unexpected response.";
+        } catch (err) {
+          answerEl.textContent = "Network error.";
+          console.error(err);
+        }
+      });
+    </script>
+  </body>
+</html>
+
